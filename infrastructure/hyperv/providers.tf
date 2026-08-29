@@ -8,5 +8,6 @@ terraform {
 }
 
 provider "hyperv" {
-  # Configuration options will be added only if the local Hyper-V host requires them.
+  # Terraform will run directly on the Windows Hyper-V host.
+  backend = "local"
 }
