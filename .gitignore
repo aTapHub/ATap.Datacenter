@@ -1,0 +1,50 @@
+# Terraform working directories and downloaded providers
+**/.terraform/*
+
+# Terraform state and state backups
+*.tfstate
+*.tfstate.*
+
+# Terraform plan output
+*.tfplan
+tfplan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform variable files can contain secrets
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+
+# Local Terraform overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI configuration can contain credentials
+.terraformrc
+terraform.rc
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*~
+
+# IDE and editor artifacts
+.idea/
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Operating-system artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
