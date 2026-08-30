@@ -103,6 +103,33 @@ These should not be introduced prematurely.
 
 ---
 
+## Enterprise learning direction
+
+The learning environment should converge toward enterprise-style lifecycle management, not remain a collection of manual procedures.
+
+For each infrastructure layer, learn both the underlying mechanism and how that layer is operated repeatably. The eventual lifecycle should cover:
+
+* provisioning
+* configuration
+* validation
+* patching and upgrades
+* recovery
+* safe destruction and rebuilding
+* documentation and operational troubleshooting
+
+Manual work is appropriate when it reveals an important mechanism for the first time, establishes a known-good reference, or is necessary for diagnosis. Before using a manual step, explain:
+
+1. What concept the step is intended to teach or verify.
+2. Why automation would hide that concept or is not yet justified.
+3. Whether the step changes source-controlled desired state.
+4. What automation or documented process will replace it later.
+
+Do not repeat a manual process after its learning value has been exhausted when a repeatable implementation is the actual objective.
+
+Enterprise focus does not mean introducing every enterprise tool immediately. Add tooling when its operational responsibility is understood and there is a concrete lifecycle problem for it to solve.
+
+---
+
 ## Core engineering principles
 
 ### 1. Learn before abstracting
@@ -301,7 +328,7 @@ High availability is not a requirement for the first version.
 
 ## Automation progression
 
-Do not automate everything immediately.
+Automation should be introduced progressively, after the mechanism and ownership boundary are understood.
 
 The expected progression is:
 
@@ -311,15 +338,19 @@ Terraform manages Hyper-V resources.
 
 ### Phase 2
 
-Ubuntu configuration may initially be performed manually.
+Build a repeatable Ubuntu provisioning process. A first manual installation may be used as a reference, but routine VM creation should become unattended and reproducible.
 
 ### Phase 3
 
-Repeated Linux configuration may later move to Ansible.
+Manage repeated Linux configuration, validation, patching, and Kubernetes host preparation with an appropriate configuration-management process, potentially Ansible.
 
 ### Phase 4
 
-Kubernetes application/platform configuration may later move toward GitOps using Argo CD.
+Bootstrap Kubernetes with upstream components and kubeadm. Perform the first bootstrap explicitly enough to understand it, then automate repeated cluster lifecycle operations where doing so preserves that understanding.
+
+### Phase 5
+
+Manage Kubernetes application and platform configuration declaratively, potentially moving toward GitOps using Argo CD.
 
 This progression is intentional.
 
@@ -387,12 +418,14 @@ If infrastructure commands cannot be executed because Codex is running on a deve
 
 We are currently at:
 
-**Milestone 0 — Repository and Terraform foundation**
+**Milestone 1 — Reproducible Ubuntu VM provisioning**
 
-The immediate objective is not to create Kubernetes.
+Milestone 0 proved that Terraform can create and destroy one Hyper-V VM and introduced its virtual disk, firmware, installation media, and networking relationships.
 
-The first infrastructure milestone will be:
+The immediate objective is now:
 
-> Terraform successfully creates and destroys one Hyper-V VM.
+> Reproducibly provision one SSH-ready Ubuntu VM, then destroy and rebuild its disposable resources without destroying stable Hyper-V host networking.
 
-Only after that works should the configuration be generalized to three machines.
+The implementation should establish a clear boundary between stable host infrastructure and disposable VM infrastructure. It should replace repeated interactive Ubuntu installation with an unattended installation or reusable-image process whose inputs are stored in source control.
+
+Only after this lifecycle is understood and verified should the VM definition be generalized to three machines.

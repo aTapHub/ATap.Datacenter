@@ -1,6 +1,6 @@
 # ATap.Datacenter
 
-ATap.Datacenter is a learning-oriented local datacenter and Kubernetes homelab. The project builds each infrastructure layer incrementally so that the underlying Terraform, Hyper-V, Linux, and Kubernetes concepts remain visible.
+ATap.Datacenter is a learning-oriented local datacenter and Kubernetes homelab. The project builds each infrastructure layer incrementally so that the underlying Terraform, Hyper-V, Linux, and Kubernetes concepts remain visible, while converging on repeatable enterprise-style lifecycle management.
 
 ## Target architecture
 
@@ -20,6 +20,8 @@ The topology consists of one Kubernetes control-plane node and two worker nodes.
 
 Terraform configuration can be edited from a development machine, but Terraform will run on the separate Windows Hyper-V host. Persistent VM images, configuration, and virtual disks will live under `D:\Homelab\` rather than on the host's `C:` drive.
 
-## First milestone
+## Learning and automation approach
 
-The first infrastructure milestone is intentionally small: use Terraform to create and destroy one Hyper-V virtual machine successfully. The configuration will be generalized to all three machines only after that workflow is understood and verified.
+Manual work may be used to expose an important mechanism, establish a known-good reference, or diagnose a failure. It should have an explicit reason and a planned automation successor; routine provisioning, configuration, validation, patching, recovery, and rebuilding should ultimately be repeatable and source controlled.
+
+The first infrastructure milestone proved that Terraform could create and destroy one Hyper-V VM. The current milestone is to provision one SSH-ready Ubuntu VM reproducibly and prove that its disposable resources can be destroyed and rebuilt without destroying stable Hyper-V host networking. The configuration will be generalized to all three machines only after that lifecycle is understood and verified.
