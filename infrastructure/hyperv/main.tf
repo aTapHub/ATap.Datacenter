@@ -27,7 +27,7 @@ resource "hyperv_vhd" "control_plane" {
 }
 
 resource "hyperv_virtual_switch" "lan" {
-  name              = "homelab-external"
+  name              = "Kubernetes"
   switch_type       = "External"
   net_adapter_names = ["Ethernet"]
 
