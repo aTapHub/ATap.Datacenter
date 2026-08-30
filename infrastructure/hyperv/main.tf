@@ -10,6 +10,13 @@ resource "hyperv_vm" "control_plane" {
     startup_bytes = 4 * 1024 * 1024 * 1024
   }
 
+  network_adapter = [
+    {
+      name        = "primary"
+      switch_name = hyperv_virtual_switch.lan.name
+    }
+  ]
+
   hard_disk_drive = [
     {
       path                = hyperv_vhd.control_plane.path
