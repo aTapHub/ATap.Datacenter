@@ -36,6 +36,25 @@ resource "hyperv_vm" "control_plane" {
       controller_location = 1
     }
   ]
+
+  boot_order = [
+    {
+      type                = "dvd_drive"
+      controller_type     = "SCSI"
+      controller_number   = 0
+      controller_location = 1
+    },
+    {
+      type                = "hard_disk_drive"
+      controller_type     = "SCSI"
+      controller_number   = 0
+      controller_location = 0
+    },
+    {
+      type = "network_adapter"
+      name = "primary"
+    }
+  ]
 }
 
 resource "hyperv_vhd" "control_plane" {
