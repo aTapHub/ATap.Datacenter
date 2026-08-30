@@ -1,6 +1,8 @@
 resource "hyperv_vm" "control_plane" {
-  name       = "k8s-cp-01"
-  generation = 2
+  name                 = "k8s-cp-01"
+  generation           = 2
+  secure_boot          = true
+  secure_boot_template = "MicrosoftUEFICertificateAuthority"
 
   cpu = {
     count = 2
