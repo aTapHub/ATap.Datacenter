@@ -25,6 +25,15 @@ resource "hyperv_vm" "control_plane" {
       controller_location = 0
     }
   ]
+
+  dvd_drive = [
+    {
+      iso_path            = "D:/Homelab/images/ubuntu-24.04.4-live-server-amd64.iso"
+      controller_type     = "SCSI"
+      controller_number   = 0
+      controller_location = 1
+    }
+  ]
 }
 
 resource "hyperv_vhd" "control_plane" {
