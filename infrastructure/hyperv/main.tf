@@ -15,7 +15,7 @@ resource "hyperv_vm" "control_plane" {
   network_adapter = [
     {
       name        = "primary"
-      switch_name = hyperv_virtual_switch.lan.name
+      switch_name = data.hyperv_virtual_switch.lan.name
     }
   ]
 
@@ -28,22 +28,7 @@ resource "hyperv_vm" "control_plane" {
     }
   ]
 
-  dvd_drive = [
-    {
-      iso_path            = "D:/Homelab/images/ubuntu-24.04.4-live-server-amd64.iso"
-      controller_type     = "SCSI"
-      controller_number   = 0
-      controller_location = 1
-    }
-  ]
-
   boot_order = [
-    {
-      type                = "dvd_drive"
-      controller_type     = "SCSI"
-      controller_number   = 0
-      controller_location = 1
-    },
     {
       type                = "hard_disk_drive"
       controller_type     = "SCSI"
@@ -63,15 +48,8 @@ resource "hyperv_vhd" "control_plane" {
   vhd_type   = "dynamic"
 }
 
-resource "hyperv_virtual_switch" "lan" {
-  name              = "Kubernetes"
-  switch_type       = "External"
-  net_adapter_names = ["Ethernet"]
-
-  # Keep the Windows host connected to the physical LAN through the switch.
-  allow_management_os = true
-
-  # Destroying an external switch can briefly interrupt host networking.
-  # Direct console access provides a recovery path if IP migration fails.
-  force_management_os_migration = true
+data "hyperv_virtual_switch" "lan" {
+  # The external switch belongs to the stable Hyper-V host infrastructure.
+  # This VM stack uses it without creating, changing, or destroying it.
+  name = "Kubernetes"
 }
