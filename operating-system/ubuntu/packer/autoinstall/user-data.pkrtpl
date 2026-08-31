@@ -1,0 +1,46 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  # Use the installer embedded in the pinned ISO rather than refreshing it to
+  # a different version during the build.
+  refresh-installer:
+    update: false
+
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  timezone: Etc/UTC
+
+  # The direct layout creates a conventional GPT disk whose final root
+  # partition can later be expanded when Terraform copies and grows the VHDX.
+  storage:
+    layout:
+      name: direct
+
+  ssh:
+    install-server: true
+    allow-pw: false
+
+  packages:
+    - cloud-init
+    - linux-cloud-tools-virtual
+    - openssh-server
+
+  updates: security
+  shutdown: reboot
+
+  # identity is intentionally omitted. cloud-init creates this temporary,
+  # key-only build account on the first boot after installation.
+  user-data:
+    users:
+      - name: ${build_username}
+        gecos: Packer Image Builder
+        groups:
+          - adm
+          - sudo
+        shell: /bin/bash
+        lock_passwd: true
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        ssh_authorized_keys:
+          - ${ssh_public_key}

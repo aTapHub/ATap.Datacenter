@@ -29,6 +29,13 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Packer caches, local inputs, and generated artifacts
+**/.packer_cache/
+*.pkrvars.hcl
+!*.pkrvars.hcl.example
+packer-manifest.json
+output-*/
+
 # Temporary and backup files
 *.tmp
 *.temp

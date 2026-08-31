@@ -1,0 +1,2 @@
+instance-id: packer-ubuntu-24-04
+local-hostname: ubuntu-image-builder

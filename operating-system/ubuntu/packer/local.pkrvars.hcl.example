@@ -1,0 +1,13 @@
+# Copy this file to local.pkrvars.hcl. The copied file is ignored by Git.
+# Keep the private key outside the repository.
+
+ssh_public_key       = "ssh-ed25519 REPLACE_WITH_THE_PUBLIC_KEY packer-build"
+ssh_private_key_file = "D:/Homelab/keys/packer-build"
+
+# Defaults are shown here only to make host-specific overrides discoverable.
+# iso_path      = "D:/Homelab/images/ubuntu-24.04.4-live-server-amd64.iso"
+# switch_name   = "Kubernetes"
+# image_version = "ubuntu-24.04.4-base-v1"
+# output_root   = "D:/Homelab/images"
+# temp_path     = "D:/Homelab/packer-temp"
+# headless      = false
