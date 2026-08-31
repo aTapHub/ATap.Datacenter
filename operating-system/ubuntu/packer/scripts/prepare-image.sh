@@ -28,4 +28,7 @@ apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 sync
-shutdown -P now
+
+# Queue the power-off request and return immediately. Packer observes the VM
+# through Hyper-V and waits for it to reach the Off state.
+systemctl poweroff --no-block
