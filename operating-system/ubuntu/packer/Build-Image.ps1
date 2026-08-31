@@ -1,9 +1,15 @@
 [CmdletBinding()]
 param(
-    [string] $VarFile = (Join-Path $PSScriptRoot 'local.pkrvars.hcl')
+    [string] $VarFile
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Windows PowerShell 5.1 does not populate $PSScriptRoot early enough to use it
+# reliably in a parameter default expression. Resolve the default after binding.
+if ([string]::IsNullOrWhiteSpace($VarFile)) {
+    $VarFile = Join-Path -Path $PSScriptRoot -ChildPath 'local.pkrvars.hcl'
+}
 
 if (-not (Get-Command packer -ErrorAction SilentlyContinue)) {
     throw 'HashiCorp Packer is not installed or is not available on PATH.'
