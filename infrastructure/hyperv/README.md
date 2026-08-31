@@ -54,13 +54,14 @@ Stop-VM -Name 'k8s-cp-01'
 
 Do not use `-TurnOff`.
 
-Leave `vm_desired_state = "Off"`, then run:
+Override the repository's normal `Running` state for this one-time migration,
+then run:
 
 ```powershell
 terraform init -upgrade=false
 terraform fmt -check
 terraform validate
-terraform plan -out .\first-boot.tfplan
+terraform plan -var 'vm_desired_state=Off' -out .\first-boot.tfplan
 terraform apply .\first-boot.tfplan
 ```
 
@@ -68,9 +69,9 @@ Review the plan before applying it. It should create the copied OS disk and
 seed ISO, update or create the VM, and leave the VM off. The older
 `k8s-cp-01.vhdx` resource may be destroyed after Terraform detaches it.
 
-Change `vm_desired_state` in `terraform.tfvars` to `"Running"`, then run a
-second plan and apply. This explicit two-stage operation is intentional:
-Hyper-V requires the VM to be off while changing disk and DVD attachments.
+Run a second plan and apply without the temporary override. The tracked default
+is `Running`. This explicit two-stage operation is intentional: Hyper-V requires
+the VM to be off while changing disk and DVD attachments.
 
 ```powershell
 terraform plan -out .\start-vm.tfplan
@@ -85,13 +86,13 @@ DHCP supplies the address on the existing external switch.
 ## Safe destruction and rebuilding
 
 The provider deliberately uses a hard power-off when a running VM is destroyed.
-For a clean lifecycle, first set `vm_desired_state = "Off"` and apply that state,
-then destroy:
+For a clean lifecycle, temporarily override the tracked `Running` state, apply
+the graceful stop, and pass the same override to destroy:
 
 ```powershell
-terraform plan -out .\stop-vm.tfplan
+terraform plan -var 'vm_desired_state=Off' -out .\stop-vm.tfplan
 terraform apply .\stop-vm.tfplan
-terraform destroy
+terraform destroy -var 'vm_desired_state=Off'
 ```
 
 Destroy removes the disposable VM disk and seed ISO. It does not remove the

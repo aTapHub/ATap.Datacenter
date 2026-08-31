@@ -57,9 +57,9 @@ variable "operator_ssh_public_key_path" {
 }
 
 variable "vm_desired_state" {
-  description = "Desired Hyper-V power state. Keep Off while changing VM hardware, then set Running to boot."
+  description = "Desired Hyper-V power state. Override with Off temporarily for hardware changes or safe destruction."
   type        = string
-  default     = "Off"
+  default     = "Running"
 
   validation {
     condition     = contains(["Off", "Running"], var.vm_desired_state)
