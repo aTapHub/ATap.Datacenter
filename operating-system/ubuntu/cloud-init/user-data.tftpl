@@ -1,0 +1,32 @@
+#cloud-config
+preserve_hostname: false
+hostname: ${hostname}
+manage_etc_hosts: true
+
+users:
+  - name: ${operator_username}
+    gecos: Homelab Operator
+    groups:
+      - adm
+      - sudo
+    shell: /bin/bash
+    lock_passwd: true
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ${operator_ssh_public_key}
+
+disable_root: true
+ssh_pwauth: false
+ssh_deletekeys: true
+ssh_genkeytypes:
+  - ed25519
+  - ecdsa
+  - rsa
+
+# This is a no-op for today's 40 GiB image and lets future copies use a larger
+# logical VHDX without requiring a second disk-expansion mechanism.
+growpart:
+  mode: auto
+  devices:
+    - /
+resize_rootfs: true

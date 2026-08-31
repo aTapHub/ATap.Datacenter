@@ -28,6 +28,8 @@ The first infrastructure milestone proved that Terraform could create and destro
 
 ## Ubuntu image pipeline
 
-Packer and Ubuntu autoinstall build a reusable Hyper-V VHDX from the official Ubuntu Server ISO. Terraform will later copy that base disk when it creates a VM; Terraform does not run the operating-system installer itself.
+Packer and Ubuntu autoinstall build a reusable Hyper-V VHDX from the official Ubuntu Server ISO. Terraform copies that immutable base disk into a disposable per-VM VHDX and attaches a generated NoCloud seed ISO for first-boot identity; Terraform does not run the operating-system installer itself.
 
 The image recipe is under [`operating-system/ubuntu/packer`](operating-system/ubuntu/packer). Builds run on the Windows Hyper-V host because they create a temporary Hyper-V VM. Generated images and temporary VM data remain under `D:\Homelab` and are not committed to Git.
+
+The first-VM deployment and lifecycle instructions are under [`infrastructure/hyperv`](infrastructure/hyperv).

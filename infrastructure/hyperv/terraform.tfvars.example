@@ -1,0 +1,13 @@
+# Copy this file to terraform.tfvars on the Hyper-V host. terraform.tfvars is
+# intentionally ignored because values may be host- or operator-specific.
+
+operator_ssh_public_key_path = "D:/Homelab/keys/homelab-admin.pub"
+
+# Keep the VM off for the first apply so Terraform can safely replace the old
+# learning-stage disk and attach the generated cloud-init media. Change this to
+# "Running" for the following apply.
+vm_desired_state = "Off"
+
+# Override these only if your Packer artifact or stable host switch differs.
+# ubuntu_base_image_path = "D:/Homelab/images/ubuntu-24.04.4-base-v1/Virtual Hard Disks/packer-ubuntu-24-04.vhdx"
+# switch_name            = "Kubernetes"
