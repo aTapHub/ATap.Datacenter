@@ -8,8 +8,18 @@ if [[ "${ID}" != "ubuntu" || "${VERSION_ID}" != "24.04" ]]; then
   exit 1
 fi
 
-systemctl is-enabled ssh.service
-systemctl is-active ssh.service
+if systemctl is-enabled --quiet ssh.socket; then
+  systemctl is-active --quiet ssh.socket
+  echo "SSH is available through systemd socket activation."
+elif systemctl is-enabled --quiet ssh.service; then
+  systemctl is-active --quiet ssh.service
+  echo "SSH is available through an enabled systemd service."
+else
+  echo "Neither ssh.socket nor ssh.service is enabled." >&2
+  exit 1
+fi
+
+sudo /usr/sbin/sshd -t
 command -v cloud-init >/dev/null
 cloud-init status --wait
 
