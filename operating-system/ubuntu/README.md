@@ -92,3 +92,26 @@ apply to one node, reboot and validate it, then roll the change through the
 remaining nodes. If a pre-existing containerd configuration is replaced, its
 one-time backup is retained as
 `/etc/containerd/config.toml.atap-before-kubernetes`.
+
+## Kubernetes packages
+
+The cluster is pinned to Kubernetes `v1.36.4`. The kubelet, kubeadm, and kubectl
+APT package version is `1.36.4-1.1` from the official per-minor `v1.36`
+repository at `pkgs.k8s.io`. The supporting `cri-tools` and `kubernetes-cni`
+packages are pinned to `1.36.0-1.1` and `1.9.1-1.1` respectively.
+
+Install one node at a time:
+
+```powershell
+.\operating-system\ubuntu\Install-KubernetesPackages.ps1 -Node k8s-cp-01
+```
+
+The wrapper verifies the repository signing-key fingerprint, installs exact
+package versions, places all five packages on APT hold, enables kubelet, and
+validates the installed tools. Kubelet does not become healthy
+until the node is initialized or joined with kubeadm; restart attempts before
+that point are expected.
+
+Kubernetes package upgrades require an explicit change to the wrapper's minor
+repository and package-version defaults. Upgrade one node at a time using the
+kubeadm upgrade procedure rather than removing the package holds globally.
