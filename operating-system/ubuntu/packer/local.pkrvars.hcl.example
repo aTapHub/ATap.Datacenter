@@ -7,7 +7,7 @@ ssh_private_key_file = "D:/Homelab/keys/packer-build"
 # Defaults are shown here only to make host-specific overrides discoverable.
 # iso_path      = "D:/Homelab/images/ubuntu-24.04.4-live-server-amd64.iso"
 # switch_name   = "Kubernetes"
-# image_version = "ubuntu-24.04.4-base-v1"
+# image_version = "ubuntu-24.04.4-base-v3"
 # output_root   = "D:/Homelab/images"
 # temp_path     = "D:/Homelab/packer-temp"
 # headless      = false

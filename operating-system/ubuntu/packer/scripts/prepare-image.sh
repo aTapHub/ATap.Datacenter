@@ -20,7 +20,13 @@ gpasswd --delete "${build_user}" adm >/dev/null 2>&1 || true
 # Make clones initialize as new machines. cloud-init will rerun, systemd will
 # generate a new machine ID, and OpenSSH/cloud-init will generate new host keys.
 rm -f /etc/ssh/ssh_host_*
+
+# Subiquity persists the installer datasource and its temporary Packer user in
+# this file. If retained, clones select DataSourceNone instead of their CIDATA
+# media and recreate cloud-init.disabled during first boot.
+rm -f /etc/cloud/cloud.cfg.d/99-installer.cfg
 cloud-init clean --logs --seed --machine-id
+rm -f /etc/cloud/cloud-init.disabled
 
 # Remove transient identifiers and package/download residue from the artifact.
 rm -f /var/lib/systemd/random-seed
@@ -29,6 +35,7 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 sync
 
-# Queue the power-off request and return immediately. Packer observes the VM
-# through Hyper-V and waits for it to reach the Off state.
-systemctl poweroff --no-block
+# Keep the SSH command attached until systemd begins the power-off transaction.
+# Packer treats the resulting SSH disconnect as expected and waits for Hyper-V
+# to report that the VM reached the Off state.
+systemctl poweroff

@@ -19,7 +19,7 @@ variable "switch_name" {
 variable "image_version" {
   type        = string
   description = "Versioned name of the output image directory. Change this rather than overwriting an existing image."
-  default     = "ubuntu-24.04.4-base-v1"
+  default     = "ubuntu-24.04.4-base-v3"
 }
 
 variable "output_root" {

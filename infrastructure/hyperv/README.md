@@ -69,6 +69,23 @@ Review the plan before applying it. It should create the copied OS disk and
 seed ISO, update or create the VM, and leave the VM off. The older
 `k8s-cp-01.vhdx` resource may be destroyed after Terraform detaches it.
 
+Hyper-V on Windows client enables automatic checkpoints on newly created VMs.
+Provider 0.4.0 does not expose that VM setting, and an automatic checkpoint
+changes the active disk from the Terraform-managed `.vhdx` to an `.avhdx`
+differencing disk. Disable the setting while the VM is off, before its first
+start:
+
+```powershell
+Set-VM -Name 'k8s-cp-01' -AutomaticCheckpointsEnabled $false
+
+Get-VM -Name 'k8s-cp-01' |
+  Select-Object Name, State, AutomaticCheckpointsEnabled
+```
+
+Confirm that the VM is `Off` and `AutomaticCheckpointsEnabled` is `False`.
+This explicit host step is temporary until the provider can manage the setting
+as source-controlled desired state.
+
 Run a second plan and apply without the temporary override. The tracked default
 is `Running`. This explicit two-stage operation is intentional: Hyper-V requires
 the VM to be off while changing disk and DVD attachments.

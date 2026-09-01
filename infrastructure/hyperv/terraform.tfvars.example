@@ -4,5 +4,5 @@
 operator_ssh_public_key_path = "D:/Homelab/keys/homelab-admin.pub"
 
 # Override these only if your Packer artifact or stable host switch differs.
-# ubuntu_base_image_path = "D:/Homelab/images/ubuntu-24.04.4-base-v1/Virtual Hard Disks/packer-ubuntu-24-04.vhdx"
+# ubuntu_base_image_path = "D:/Homelab/images/ubuntu-24.04.4-base-v3/Virtual Hard Disks/packer-ubuntu-24-04.vhdx"
 # switch_name            = "Kubernetes"

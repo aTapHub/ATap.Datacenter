@@ -1,7 +1,7 @@
 variable "ubuntu_base_image_path" {
   description = "Absolute path on the Hyper-V host to the immutable Packer-built Ubuntu VHDX."
   type        = string
-  default     = "D:/Homelab/images/ubuntu-24.04.4-base-v1/Virtual Hard Disks/packer-ubuntu-24-04.vhdx"
+  default     = "D:/Homelab/images/ubuntu-24.04.4-base-v3/Virtual Hard Disks/packer-ubuntu-24-04.vhdx"
 }
 
 variable "switch_name" {
@@ -19,7 +19,7 @@ variable "control_plane_name" {
 variable "control_plane_instance_id" {
   description = "NoCloud instance identity. Change it only when deliberately rebuilding first-boot identity."
   type        = string
-  default     = "k8s-cp-01-v1"
+  default     = "k8s-cp-01-v3"
 }
 
 variable "control_plane_disk_path" {

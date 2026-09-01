@@ -92,7 +92,7 @@ headless = true
 Successful output is stored under:
 
 ```text
-D:\Homelab\images\ubuntu-24.04.4-base-v1\Virtual Hard Disks\
+D:\Homelab\images\ubuntu-24.04.4-base-v3\Virtual Hard Disks\
 ```
 
 Use a new `image_version` for the next build instead of overwriting a base image already referenced by deployed VMs.
@@ -106,7 +106,12 @@ Before shutdown, `prepare-image.sh`:
 * removes the temporary account's authorized key;
 * locks that account and assigns `nologin`;
 * removes SSH host keys;
+* removes Subiquity's installer-only datasource and disable marker;
 * cleans cloud-init state and the machine ID;
 * removes transient package and random-seed data.
+
+The repository's `.gitattributes` keeps guest `.sh` files on LF line endings.
+These scripts execute directly inside Linux, where a CRLF shebang would prevent
+the kernel from locating `/usr/bin/env bash`.
 
 Each VM deployed from the resulting VHDX must receive its own cloud-init NoCloud seed so that it generates a unique machine identity, SSH host keys, hostname, and operator account.
