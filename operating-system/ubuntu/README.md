@@ -54,3 +54,41 @@ the swap file is not deleted. If this preparation must be intentionally
 reversed, restore that backup, remove `/etc/sysctl.d/99-kubernetes.conf`, reload
 the sysctl configuration, and enable configured swap again. Rollback is an
 operator action because Kubernetes nodes are expected to retain this state.
+
+## Container runtime
+
+Containerd is installed as a separate lifecycle step after base host
+preparation. The repository currently pins the Ubuntu Noble packages validated
+for this cluster:
+
+* containerd `2.2.1-0ubuntu1~24.04.3`;
+* runc `1.3.4-0ubuntu1~24.04.1`.
+
+The configuration enables the containerd CRI runtime, selects `runc`, and uses
+the systemd cgroup driver required by these cgroup v2 hosts. The `overlay`
+kernel module is loaded persistently because containerd uses the overlayfs
+snapshotter. CNI-specific networking remains a later step.
+
+Install and validate one node at a time:
+
+```powershell
+.\operating-system\ubuntu\Install-ContainerRuntime.ps1 -Node k8s-cp-01
+```
+
+The wrapper installs the versioned packages, deploys the source-controlled
+`config/containerd/config.toml`, enables the service, and verifies the socket,
+kernel module, package versions, and CRI runtime plugin. Re-running it is safe.
+
+After a reboot, the essential checks are:
+
+```bash
+systemctl is-enabled containerd
+systemctl is-active containerd
+sudo ctr plugins list
+```
+
+Package version changes must be intentional: update the wrapper defaults,
+apply to one node, reboot and validate it, then roll the change through the
+remaining nodes. If a pre-existing containerd configuration is replaced, its
+one-time backup is retained as
+`/etc/containerd/config.toml.atap-before-kubernetes`.
