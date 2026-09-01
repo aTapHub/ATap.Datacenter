@@ -69,3 +69,24 @@ applies `installation.yaml` and waits for Calico, the control-plane node, and
 CoreDNS to become healthy. The same file enables the Calico API server required
 for its tiered policy API. Re-running the wrapper reconciles the same declared
 state.
+
+## Worker join
+
+Join one prepared worker at a time from the Hyper-V host:
+
+```powershell
+.\kubernetes\kubeadm\Join-Worker.ps1 -Worker k8s-worker-01
+```
+
+The wrapper verifies that the target is not already joined, creates a fresh
+15-minute kubeadm bootstrap token on the control plane, and pipes the join
+command directly to the worker. The token is held only in process memory and is
+never printed, written to disk, or committed, and it is revoked immediately
+after the join attempt. After the join, the wrapper waits for the node,
+kube-proxy, and Calico to become healthy, then uses temporary pods to verify
+cross-node Pod traffic and cluster DNS. The validation namespace is removed
+automatically.
+
+Joining changes cluster membership, so the wrapper intentionally refuses to
+re-run against an existing node. Recovery or removal must use an explicit
+kubeadm reset and Kubernetes node-removal procedure rather than this workflow.
