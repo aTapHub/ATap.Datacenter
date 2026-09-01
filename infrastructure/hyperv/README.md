@@ -43,7 +43,27 @@ Copy-Item '.\terraform.tfvars.example' '.\terraform.tfvars'
 Confirm that `operator_ssh_public_key_path` and `ubuntu_base_image_path` match
 files present on the Hyper-V host.
 
-## Adding a node safely
+## Terraform-only deployment
+
+Terraform consumes an existing immutable image and never invokes Packer. For a
+routine plan and apply, run:
+
+```powershell
+.\Deploy-VMs.ps1
+```
+
+The wrapper initializes and validates Terraform, presents the plan for
+approval, applies it, refreshes computed guest values, and requires a final
+no-change plan. Use `-AutoApprove` only in a trusted unattended workflow.
+
+When adding a newly declared node, identify its Terraform map key so the script
+can create it off, disable Hyper-V automatic checkpoints, and then start it:
+
+```powershell
+.\Deploy-VMs.ps1 -NewNode worker_02
+```
+
+## Adding a node safely by hand
 
 Keep a newly declared node off during its first apply while existing nodes stay
 running. For the second worker, run:

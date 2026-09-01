@@ -35,3 +35,21 @@ Packer and Ubuntu autoinstall build a reusable Hyper-V VHDX from the official Ub
 The image recipe is under [`operating-system/ubuntu/packer`](operating-system/ubuntu/packer). Builds run on the Windows Hyper-V host because they create a temporary Hyper-V VM. Generated images and temporary VM data remain under `D:\Homelab` and are not committed to Git.
 
 The three-VM deployment and lifecycle instructions are under [`infrastructure/hyperv`](infrastructure/hyperv).
+
+## Independent execution phases
+
+Build a new immutable image only when the Ubuntu image recipe changes:
+
+```powershell
+.\operating-system\ubuntu\packer\Build-Image.ps1
+```
+
+For normal infrastructure changes or VM rebuilds, reuse the image configured by
+`ubuntu_base_image_path` and run Terraform independently:
+
+```powershell
+.\infrastructure\hyperv\Deploy-VMs.ps1
+```
+
+Neither script invokes the other. This keeps image construction and VM
+deployment as separate lifecycle operations.

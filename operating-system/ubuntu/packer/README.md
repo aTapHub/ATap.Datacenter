@@ -13,7 +13,8 @@ Packer owns the image-building lifecycle:
 5. Shut down cleanly and retain the resulting VHDX.
 6. Remove the temporary VM registration.
 
-Terraform does not invoke Packer. A later Terraform change will copy the validated base VHDX into an independently managed per-VM disk.
+Terraform does not invoke Packer. The independent Hyper-V deployment workflow
+copies the validated base VHDX into a separately managed disk for each VM.
 
 ## Host prerequisites
 
@@ -96,6 +97,15 @@ D:\Homelab\images\ubuntu-24.04.4-base-v3\Virtual Hard Disks\
 ```
 
 Use a new `image_version` for the next build instead of overwriting a base image already referenced by deployed VMs.
+
+Building an image does not deploy or change Terraform-managed VMs. To deploy
+from an existing image, run:
+
+```powershell
+.\infrastructure\hyperv\Deploy-VMs.ps1
+```
+
+from the repository root.
 
 ## Security and image identity
 
