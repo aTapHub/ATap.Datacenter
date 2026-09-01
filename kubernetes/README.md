@@ -43,3 +43,16 @@ cluster:
 The wrapper invokes `kubeadm init phase preflight --dry-run`. It does not create
 certificates, kubeconfig files, static Pod manifests, bootstrap tokens, or etcd
 state.
+
+After preflight succeeds, initialize the control plane explicitly:
+
+```powershell
+.\kubernetes\kubeadm\Initialize-ControlPlane.ps1
+```
+
+The wrapper refuses to run if `/etc/kubernetes/admin.conf` already exists. It
+keeps kubeadm output, including bootstrap credentials, out of the terminal and
+repository. On success it installs the admin kubeconfig for the `ubuntu`
+operator and verifies that the API is healthy. The control-plane node remains
+`NotReady` until Calico is installed; this is the expected boundary between
+cluster bootstrap and Pod networking.
