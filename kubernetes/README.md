@@ -25,3 +25,21 @@ distribution. Outbound Pod traffic is source-NATed by Calico.
 The source-controlled Installation resource is under
 `networking/calico/installation.yaml`. The pinned operator and CRD installation
 process will be added after the control plane is initialized.
+
+## kubeadm configuration
+
+The source-controlled control-plane configuration is
+`kubeadm/kubeadm-init.yaml`. It binds the API server to `192.168.0.128`, uses
+`k8s-cp-01:6443` as the stable control-plane endpoint, selects the containerd
+CRI socket, and keeps the kubelet and containerd on the systemd cgroup driver.
+
+Run configuration validation and the preflight phase without initializing the
+cluster:
+
+```powershell
+.\kubernetes\kubeadm\Test-KubeadmPreflight.ps1
+```
+
+The wrapper invokes `kubeadm init phase preflight --dry-run`. It does not create
+certificates, kubeconfig files, static Pod manifests, bootstrap tokens, or etcd
+state.
