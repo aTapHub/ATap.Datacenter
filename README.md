@@ -14,7 +14,9 @@ Windows Hyper-V Host
         +-- k8s-worker-02
 ```
 
-The topology consists of one Kubernetes control-plane node and two worker nodes. Kubernetes will eventually be bootstrapped manually with `kubeadm`, but it is not part of the current milestone.
+The topology consists of one Kubernetes control-plane node and two worker
+nodes. The initial upstream Kubernetes cluster is bootstrapped with `kubeadm`
+and uses Calico for Pod networking.
 
 ## Terraform execution
 
@@ -26,7 +28,15 @@ Manual work may be used to expose an important mechanism, establish a known-good
 
 The reproducible-provisioning milestone is complete. Packer produces a generalized Ubuntu image, and Terraform now provisions one SSH-ready control-plane VM and two SSH-ready worker VMs without managing or destroying the stable Hyper-V host network. Each VM has its own writable disk and NoCloud identity media derived from immutable inputs.
 
-The next milestone prepares the three Ubuntu guests for Kubernetes while keeping operating-system configuration separate from Hyper-V infrastructure provisioning.
+The Kubernetes host-preparation and bootstrap milestone is also complete. All
+three Ubuntu guests use pinned Kubernetes packages and containerd, the control
+plane is initialized, both workers are joined, and Calico provides VXLAN Pod
+networking. Operating-system configuration, cluster bootstrap, and Hyper-V
+infrastructure remain separate lifecycle layers.
+
+The next learning step is the Kubernetes workload layer: explicitly deploy a
+small application, expose it with a Service, and observe scheduling,
+self-healing, and scaling before introducing higher-level platform tooling.
 
 ## Ubuntu image pipeline
 

@@ -4,6 +4,28 @@ The first cluster uses upstream Kubernetes `v1.36.4`, bootstrapped with
 kubeadm. Infrastructure provisioning and Ubuntu configuration remain owned by
 their respective repository layers.
 
+## Current baseline
+
+The initial cluster bootstrap is complete:
+
+| Node | Role | Address | Pod CIDR |
+| --- | --- | --- | --- |
+| `k8s-cp-01` | Control plane | `192.168.0.128` | `10.244.0.0/24` |
+| `k8s-worker-01` | Worker | `192.168.0.129` | `10.244.1.0/24` |
+| `k8s-worker-02` | Worker | `192.168.0.130` | `10.244.2.0/24` |
+
+Run the read-only operational baseline check from the Hyper-V host:
+
+```powershell
+.\kubernetes\Test-ClusterBaseline.ps1
+```
+
+It verifies API readiness, exact node identities and addresses, node readiness,
+Pod CIDR allocation, Pod health, deployment and daemon-set availability, and
+Calico operator status. Worker joining separately performs temporary
+cross-node Pod and DNS tests because those checks intentionally create and then
+remove test resources.
+
 ## Network contract
 
 | Network | CIDR | Purpose |
@@ -23,8 +45,8 @@ the first topology focused on Kubernetes networking rather than external route
 distribution. Outbound Pod traffic is source-NATed by Calico.
 
 The source-controlled Installation resource is under
-`networking/calico/installation.yaml`. The pinned operator and CRD installation
-process will be added after the control plane is initialized.
+`networking/calico/installation.yaml`. The installation wrapper pins and
+verifies the upstream operator and CRD manifests before applying them.
 
 ## kubeadm configuration
 
