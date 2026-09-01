@@ -1,0 +1,17 @@
+## template:jinja
+{#
+This template is installed on each Ubuntu node and rendered by cloud-init
+because first-boot user-data enables manage_etc_hosts.
+#}
+127.0.1.1 {{fqdn}} {{hostname}}
+127.0.0.1 localhost
+
+# ATap.Datacenter Kubernetes nodes
+192.168.0.128 k8s-cp-01
+192.168.0.129 k8s-worker-01
+192.168.0.130 k8s-worker-02
+
+# The following lines are desirable for IPv6 capable hosts
+::1 localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters

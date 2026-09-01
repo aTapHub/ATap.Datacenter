@@ -26,5 +26,18 @@ documented host prerequisite.
 Each reservation was verified by gracefully rebooting its VM independently.
 All three guests returned on their assigned IPv4 addresses with SSH available.
 
-Local DNS did not initially resolve the three VM hostnames. Name-resolution
-ownership will be selected after the DHCP reservations are confirmed.
+The Archer C60 does not publish the reservations as local DNS records. The
+Hyper-V host and Ubuntu guests therefore use the explicit mappings in this
+document. Run the source-controlled configuration wrapper from an elevated
+PowerShell session after loading the operator key into `ssh-agent`:
+
+```powershell
+.\operating-system\ubuntu\Configure-HostResolution.ps1
+```
+
+On Ubuntu, the wrapper installs the repository's cloud-init-compatible
+`hosts.debian.tmpl`, regenerates `/etc/hosts`, and verifies every node mapping.
+It also manages a clearly delimited block in the Windows hosts file.
+
+The wrapper was verified as idempotent, and guest hostname resolution remained
+correct after an independent reboot of `k8s-worker-02`.
