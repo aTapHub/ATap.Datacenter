@@ -115,3 +115,22 @@ that point are expected.
 Kubernetes package upgrades require an explicit change to the wrapper's minor
 repository and package-version defaults. Upgrade one node at a time using the
 kubeadm upgrade procedure rather than removing the package holds globally.
+
+## Calico host prerequisites
+
+Calico uses a VXLAN overlay in this cluster. Prepare each Ubuntu node before
+initializing the cluster:
+
+```powershell
+.\operating-system\ubuntu\Prepare-CalicoHosts.ps1 `
+  -Node k8s-cp-01,k8s-worker-01,k8s-worker-02
+```
+
+The wrapper installs the Ubuntu `conntrack` and `ipset` utilities, loads the
+`vxlan` kernel module persistently, and verifies the existing forwarding,
+containerd, firewall-manager, and kernel state. NetworkManager and firewalld
+must remain inactive. The UFW systemd unit may be loaded, but UFW packet
+filtering itself must report `Status: inactive`.
+
+This step does not create Calico interfaces or alter packet-filter rules. Those
+changes remain owned by Calico after its operator is installed.
