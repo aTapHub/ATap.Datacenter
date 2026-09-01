@@ -10,34 +10,36 @@ variable "switch_name" {
   default     = "Kubernetes"
 }
 
-variable "control_plane_name" {
-  description = "Hyper-V VM name and Ubuntu hostname for the first control-plane node."
-  type        = string
-  default     = "k8s-cp-01"
-}
+variable "nodes" {
+  description = "Explicit definitions for the Ubuntu nodes managed by this stack."
+  type = map(object({
+    name            = string
+    instance_id     = string
+    disk_path       = string
+    disk_size_bytes = number
+    memory_bytes    = number
+    seed_iso_path   = string
+  }))
 
-variable "control_plane_instance_id" {
-  description = "NoCloud instance identity. Change it only when deliberately rebuilding first-boot identity."
-  type        = string
-  default     = "k8s-cp-01-v3"
-}
+  default = {
+    control_plane = {
+      name            = "k8s-cp-01"
+      instance_id     = "k8s-cp-01-v3"
+      disk_path       = "D:/Homelab/virtual-disks/k8s-cp-01-os.vhdx"
+      disk_size_bytes = 40 * 1024 * 1024 * 1024
+      memory_bytes    = 4 * 1024 * 1024 * 1024
+      seed_iso_path   = "D:/Homelab/cloud-init/k8s-cp-01-cidata.iso"
+    }
 
-variable "control_plane_disk_path" {
-  description = "Terraform-owned writable copy of the base image for the control-plane VM."
-  type        = string
-  default     = "D:/Homelab/virtual-disks/k8s-cp-01-os.vhdx"
-}
-
-variable "control_plane_disk_size_bytes" {
-  description = "Logical size of the copied control-plane OS disk in bytes."
-  type        = number
-  default     = 40 * 1024 * 1024 * 1024
-}
-
-variable "control_plane_seed_iso_path" {
-  description = "Terraform-managed NoCloud seed ISO attached to the control-plane VM."
-  type        = string
-  default     = "D:/Homelab/cloud-init/k8s-cp-01-cidata.iso"
+    worker_01 = {
+      name            = "k8s-worker-01"
+      instance_id     = "k8s-worker-01-v3"
+      disk_path       = "D:/Homelab/virtual-disks/k8s-worker-01-os.vhdx"
+      disk_size_bytes = 50 * 1024 * 1024 * 1024
+      memory_bytes    = 6 * 1024 * 1024 * 1024
+      seed_iso_path   = "D:/Homelab/cloud-init/k8s-worker-01-cidata.iso"
+    }
+  }
 }
 
 variable "operator_username" {
@@ -56,8 +58,22 @@ variable "operator_ssh_public_key_path" {
   type        = string
 }
 
+variable "node_desired_states" {
+  description = "Optional per-node power-state overrides, used to keep a newly created node off before first boot."
+  type        = map(string)
+  default     = {}
+
+  validation {
+    condition = (
+      length(setsubtract(toset(keys(var.node_desired_states)), toset(keys(var.nodes)))) == 0 &&
+      alltrue([for state in values(var.node_desired_states) : contains(["Off", "Running"], state)])
+    )
+    error_message = "node_desired_states may contain only declared node keys with values Off or Running."
+  }
+}
+
 variable "vm_desired_state" {
-  description = "Desired Hyper-V power state. Override with Off temporarily for hardware changes or safe destruction."
+  description = "Default desired power state for nodes without a node_desired_states override."
   type        = string
   default     = "Running"
 

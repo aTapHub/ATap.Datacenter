@@ -1,15 +1,17 @@
 # Hyper-V Terraform stack
 
-This stack deploys one disposable Ubuntu control-plane VM from the immutable
-base VHDX produced by Packer.
+This stack deploys the control-plane VM and first worker VM from the immutable
+base VHDX produced by Packer. The explicit `nodes` map is the first Terraform
+generalization step; it avoids modules while the repeated VM relationships are
+still being learned.
 
 ## Ownership boundary
 
 Terraform manages:
 
-* `k8s-cp-01`;
-* its writable OS-disk copy under `D:\Homelab\virtual-disks`;
-* its small NoCloud seed ISO under `D:\Homelab\cloud-init`.
+* `k8s-cp-01` and `k8s-worker-01`;
+* their writable OS-disk copies under `D:\Homelab\virtual-disks`;
+* their small NoCloud seed ISOs under `D:\Homelab\cloud-init`.
 
 Terraform reads, but does not manage or destroy:
 
@@ -42,32 +44,23 @@ Copy-Item '.\terraform.tfvars.example' '.\terraform.tfvars'
 Confirm that `operator_ssh_public_key_path` and `ubuntu_base_image_path` match
 files present on the Hyper-V host.
 
-## First migration from the learning-stage VM
+## Adding a node safely
 
-The existing VM and blank/manual-install disk predate Terraform power-state
-management. If `k8s-cp-01` currently exists and is running, shut it down once
-through the guest or with Hyper-V's graceful integration-service request:
-
-```powershell
-Stop-VM -Name 'k8s-cp-01'
-```
-
-Do not use `-TurnOff`.
-
-Override the repository's normal `Running` state for this one-time migration,
-then run:
+Keep a newly declared node off during its first apply while existing nodes stay
+running. For the first worker, run:
 
 ```powershell
 terraform init -upgrade=false
 terraform fmt -check
 terraform validate
-terraform plan -var 'vm_desired_state=Off' -out .\first-boot.tfplan
-terraform apply .\first-boot.tfplan
+terraform plan `
+  -var 'node_desired_states={worker_01="Off"}' `
+  -out .\worker-01-off.tfplan
+terraform apply .\worker-01-off.tfplan
 ```
 
-Review the plan before applying it. It should create the copied OS disk and
-seed ISO, update or create the VM, and leave the VM off. The older
-`k8s-cp-01.vhdx` resource may be destroyed after Terraform detaches it.
+Review the plan before applying it. It should create only the worker's copied
+OS disk, seed ISO, and VM, leaving the worker off.
 
 Hyper-V on Windows client enables automatic checkpoints on newly created VMs.
 Provider 0.4.0 does not expose that VM setting, and an automatic checkpoint
@@ -76,9 +69,9 @@ differencing disk. Disable the setting while the VM is off, before its first
 start:
 
 ```powershell
-Set-VM -Name 'k8s-cp-01' -AutomaticCheckpointsEnabled $false
+Set-VM -Name 'k8s-worker-01' -AutomaticCheckpointsEnabled $false
 
-Get-VM -Name 'k8s-cp-01' |
+Get-VM -Name 'k8s-worker-01' |
   Select-Object Name, State, AutomaticCheckpointsEnabled
 ```
 
@@ -91,8 +84,8 @@ is `Running`. This explicit two-stage operation is intentional: Hyper-V requires
 the VM to be off while changing disk and DVD attachments.
 
 ```powershell
-terraform plan -out .\start-vm.tfplan
-terraform apply .\start-vm.tfplan
+terraform plan -out .\worker-01-start.tfplan
+terraform apply .\worker-01-start.tfplan
 terraform output
 ```
 
