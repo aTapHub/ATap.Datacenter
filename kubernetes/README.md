@@ -56,3 +56,16 @@ repository. On success it installs the admin kubeconfig for the `ubuntu`
 operator and verifies that the API is healthy. The control-plane node remains
 `NotReady` until Calico is installed; this is the expected boundary between
 cluster bootstrap and Pod networking.
+
+Install the pinned Calico operator and the source-controlled network resource:
+
+```powershell
+.\kubernetes\networking\calico\Install-Calico.ps1
+```
+
+The wrapper downloads the two official `v3.32.1` operator manifests, verifies
+their pinned SHA-256 digests, and applies them using server-side apply. It then
+applies `installation.yaml` and waits for Calico, the control-plane node, and
+CoreDNS to become healthy. The same file enables the Calico API server required
+for its tiered policy API. Re-running the wrapper reconciles the same declared
+state.
