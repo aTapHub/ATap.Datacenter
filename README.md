@@ -24,7 +24,9 @@ Terraform configuration can be edited from a development machine, but Terraform 
 
 Manual work may be used to expose an important mechanism, establish a known-good reference, or diagnose a failure. It should have an explicit reason and a planned automation successor; routine provisioning, configuration, validation, patching, recovery, and rebuilding should ultimately be repeatable and source controlled.
 
-The first infrastructure milestone proved that Terraform could create and destroy one Hyper-V VM. The current milestone is to provision one SSH-ready Ubuntu VM reproducibly and prove that its disposable resources can be destroyed and rebuilt without destroying stable Hyper-V host networking. The configuration will be generalized to all three machines only after that lifecycle is understood and verified.
+The reproducible-provisioning milestone is complete. Packer produces a generalized Ubuntu image, and Terraform now provisions one SSH-ready control-plane VM and two SSH-ready worker VMs without managing or destroying the stable Hyper-V host network. Each VM has its own writable disk and NoCloud identity media derived from immutable inputs.
+
+The next milestone prepares the three Ubuntu guests for Kubernetes while keeping operating-system configuration separate from Hyper-V infrastructure provisioning.
 
 ## Ubuntu image pipeline
 
@@ -32,4 +34,4 @@ Packer and Ubuntu autoinstall build a reusable Hyper-V VHDX from the official Ub
 
 The image recipe is under [`operating-system/ubuntu/packer`](operating-system/ubuntu/packer). Builds run on the Windows Hyper-V host because they create a temporary Hyper-V VM. Generated images and temporary VM data remain under `D:\Homelab` and are not committed to Git.
 
-The first-VM deployment and lifecycle instructions are under [`infrastructure/hyperv`](infrastructure/hyperv).
+The three-VM deployment and lifecycle instructions are under [`infrastructure/hyperv`](infrastructure/hyperv).

@@ -39,6 +39,15 @@ variable "nodes" {
       memory_bytes    = 6 * 1024 * 1024 * 1024
       seed_iso_path   = "D:/Homelab/cloud-init/k8s-worker-01-cidata.iso"
     }
+
+    worker_02 = {
+      name            = "k8s-worker-02"
+      instance_id     = "k8s-worker-02-v3"
+      disk_path       = "D:/Homelab/virtual-disks/k8s-worker-02-os.vhdx"
+      disk_size_bytes = 50 * 1024 * 1024 * 1024
+      memory_bytes    = 6 * 1024 * 1024 * 1024
+      seed_iso_path   = "D:/Homelab/cloud-init/k8s-worker-02-cidata.iso"
+    }
   }
 }
 

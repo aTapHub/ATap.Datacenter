@@ -10,5 +10,5 @@ operator_ssh_public_key_path = "D:/Homelab/keys/homelab-admin.pub"
 # During a new node's first apply, keep only that node off until automatic
 # checkpoints have been disabled. Remove the override before the start apply.
 # node_desired_states = {
-#   worker_01     = "Off"
+#   worker_02 = "Off"
 # }
