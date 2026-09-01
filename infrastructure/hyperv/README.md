@@ -20,6 +20,10 @@ Terraform reads, but does not manage or destroy:
 Never attach the Packer VHDX directly to a VM. Each VM receives a standalone
 copy so guest writes cannot modify the reusable image.
 
+Each node also has a Terraform-managed static MAC address. The router maps
+these identities to the reserved IPv4 addresses recorded in
+[`docs/networking.md`](../../docs/networking.md).
+
 ## One-time host input
 
 Use an existing SSH key or create a separate human-operator key. Do not reuse

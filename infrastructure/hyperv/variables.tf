@@ -17,6 +17,7 @@ variable "nodes" {
     instance_id     = string
     disk_path       = string
     disk_size_bytes = number
+    mac_address     = string
     memory_bytes    = number
     seed_iso_path   = string
   }))
@@ -27,6 +28,7 @@ variable "nodes" {
       instance_id     = "k8s-cp-01-v3"
       disk_path       = "D:/Homelab/virtual-disks/k8s-cp-01-os.vhdx"
       disk_size_bytes = 40 * 1024 * 1024 * 1024
+      mac_address     = "00155D00AD07"
       memory_bytes    = 4 * 1024 * 1024 * 1024
       seed_iso_path   = "D:/Homelab/cloud-init/k8s-cp-01-cidata.iso"
     }
@@ -36,6 +38,7 @@ variable "nodes" {
       instance_id     = "k8s-worker-01-v3"
       disk_path       = "D:/Homelab/virtual-disks/k8s-worker-01-os.vhdx"
       disk_size_bytes = 50 * 1024 * 1024 * 1024
+      mac_address     = "00155D00AD08"
       memory_bytes    = 6 * 1024 * 1024 * 1024
       seed_iso_path   = "D:/Homelab/cloud-init/k8s-worker-01-cidata.iso"
     }
@@ -45,6 +48,7 @@ variable "nodes" {
       instance_id     = "k8s-worker-02-v3"
       disk_path       = "D:/Homelab/virtual-disks/k8s-worker-02-os.vhdx"
       disk_size_bytes = 50 * 1024 * 1024 * 1024
+      mac_address     = "00155D00AD09"
       memory_bytes    = 6 * 1024 * 1024 * 1024
       seed_iso_path   = "D:/Homelab/cloud-init/k8s-worker-02-cidata.iso"
     }

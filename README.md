@@ -35,6 +35,8 @@ Packer and Ubuntu autoinstall build a reusable Hyper-V VHDX from the official Ub
 The image recipe is under [`operating-system/ubuntu/packer`](operating-system/ubuntu/packer). Builds run on the Windows Hyper-V host because they create a temporary Hyper-V VM. Generated images and temporary VM data remain under `D:\Homelab` and are not committed to Git.
 
 The three-VM deployment and lifecycle instructions are under [`infrastructure/hyperv`](infrastructure/hyperv).
+The stable address assignments and network ownership boundary are documented
+in [`docs/networking.md`](docs/networking.md).
 
 ## Independent execution phases
 

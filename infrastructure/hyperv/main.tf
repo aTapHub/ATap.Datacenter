@@ -66,6 +66,7 @@ resource "hyperv_vm" "node" {
   network_adapter = [
     {
       name        = "primary"
+      mac_address = each.value.mac_address
       switch_name = data.hyperv_virtual_switch.lan.name
     }
   ]
