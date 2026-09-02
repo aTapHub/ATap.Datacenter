@@ -112,3 +112,21 @@ automatically.
 Joining changes cluster membership, so the wrapper intentionally refuses to
 re-run against an existing node. Recovery or removal must use an explicit
 kubeadm reset and Kubernetes node-removal procedure rather than this workflow.
+
+## First workload
+
+The first learning workload is a two-replica NGINX Deployment under
+`workloads/nginx`. Kubernetes spreads the replicas across the two workers. A
+NodePort Service exposes the Deployment on port `30080` of either worker so the
+complete request path can be tested from the Hyper-V host.
+
+Apply or reconcile it and run its validations:
+
+```powershell
+.\kubernetes\workloads\nginx\Deploy-Nginx.ps1
+```
+
+The wrapper waits for the rollout, verifies that the Pods occupy two distinct
+nodes, and requests the NGINX page through both workers. The manifest also
+introduces readiness and liveness probes plus small resource requests and
+limits. These make the desired health and scheduling requirements explicit.
