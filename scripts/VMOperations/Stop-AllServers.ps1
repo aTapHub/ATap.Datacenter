@@ -45,7 +45,7 @@ function Request-GracefulShutdown {
         throw "The Hyper-V Shutdown integration service is disabled for $Name."
     }
 
-    Stop-VM -VM $vm -Shutdown -ErrorAction Stop
+    Stop-VM -VM $vm -ErrorAction Stop
 }
 
 function Wait-ForStoppedVM {
